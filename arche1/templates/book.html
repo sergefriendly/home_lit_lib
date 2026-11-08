@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}{{ book.title }} — Домашняя библиотека{% endblock %}
+
+{% block content %}
+  <h2>{{ book.title }}</h2>
+  <p class="subtitle">{{ book.author }}</p>
+
+  <table>
+    <tr><th>id</th><td class="num">{{ book.id }}</td></tr>
+    <tr><th>Автор</th><td>{{ book.author }}</td></tr>
+    <tr><th>Фамилия</th><td>{{ book.last_name }}</td></tr>
+    <tr><th>Имя</th><td>{{ book.first_name if book.first_name else "—" }}</td></tr>
+    <tr><th>Отчество</th><td>{{ book.middle_name if book.middle_name else "—" }}</td></tr>
+    <tr><th>Название</th><td>{{ book.title }}</td></tr>
+    <tr><th>Год</th><td class="num">{{ book.year if book.year is not none else "—" }}</td></tr>
+    <tr><th>Жанр</th><td>{{ book.genre if book.genre else "—" }}</td></tr>
+    <tr><th>Город</th><td>{{ book.city if book.city else "—" }}</td></tr>
+    <tr><th>Издание</th><td>{{ book.publisher if book.publisher else "—" }}</td></tr>
+  </table>
+
+  <div class="form-row">
+    <a class="btn secondary" href="{{ back }}">← К списку</a>
+    <a class="btn" href="/books/{{ book.id }}/edit?back={{ back|urlencode }}">Редактировать</a>
+    <form method="post"
+          action="/books/{{ book.id }}/delete?back={{ back|urlencode }}"
+          onsubmit="return confirm('Удалить эту книгу?');"
+          style="display:inline;">
+      <button class="btn danger" type="submit">Удалить</button>
+    </form>
+  </div>
+{% endblock %}

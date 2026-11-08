@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Книги — Домашняя библиотека{% endblock %}
+
+{% block content %}
+  {% set back_url = "/books?sort=" ~ sort ~ "&reverse=" ~ reverse ~ "&size=" ~ page_size ~ "&page=" ~ page %}
+  {% set back_enc = back_url|urlencode %}
+  <div class="form-row">
+    <a class="btn" href="/books/new?back={{ back_enc }}">+ Добавить книгу</a>
+  </div>
+
+  <p class="subtitle">Всего: {{ total }} · страница {{ page }} из {{ total_pages }}</p>
+
+  {% if books %}
+    <table>
+      <tr>
+        <th><a href="?sort=id&reverse={{ 0 if sort != 'id' or reverse else 1 }}&size={{ page_size }}">id</a></th>
+        <th><a href="?sort=author&reverse={{ 0 if sort != 'author' or reverse else 1 }}&size={{ page_size }}">Автор</a></th>
+        <th><a href="?sort=title&reverse={{ 0 if sort != 'title' or reverse else 1 }}&size={{ page_size }}">Название</a></th>
+        <th><a href="?sort=year&reverse={{ 0 if sort != 'year' or reverse else 1 }}&size={{ page_size }}">Год</a></th>
+        <th><a href="?sort=genre&reverse={{ 0 if sort != 'genre' or reverse else 1 }}&size={{ page_size }}">Жанр</a></th>
+      </tr>
+      {% for b in books %}
+        <tr>
+          <td class="num">{{ b.id }}</td>
+          <td><a href="/books/{{ b.id }}?back={{ back_enc }}">{{ b.author }}</a></td>
+          <td>{{ b.title }}</td>
+          <td class="num">{{ b.year if b.year is not none else "—" }}</td>
+          <td>{{ b.genre if b.genre else "—" }}</td>
+        </tr>
+      {% endfor %}
+    </table>
+
+    <div class="pagination">
+      {% if page > 1 %}
+        <a href="?sort={{ sort }}&reverse={{ reverse }}&size={{ page_size }}&page={{ page - 1 }}">← назад</a>
+      {% else %}
+        <span class="disabled">← назад</span>
+      {% endif %}
+
+      <span class="current">{{ page }} / {{ total_pages }}</span>
+
+      {% if page < total_pages %}
+        <a href="?sort={{ sort }}&reverse={{ reverse }}&size={{ page_size }}&page={{ page + 1 }}">вперёд →</a>
+      {% else %}
+        <span class="disabled">вперёд →</span>
+      {% endif %}
+    </div>
+
+    <div class="pagination">
+      <span>Размер:</span>
+      {% for s in page_sizes %}
+        {% if s == page_size %}
+          <span class="current">{{ s }}</span>
+        {% else %}
+          <a href="?sort={{ sort }}&reverse={{ reverse }}&size={{ s }}&page=1">{{ s }}</a>
+        {% endif %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="subtitle">Книг нет.</p>
+  {% endif %}
+{% endblock %}

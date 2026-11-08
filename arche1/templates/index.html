@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Главная — Домашняя библиотека{% endblock %}
+
+{% block content %}
+  <p class="subtitle">
+    Режим: {{ env }} · база: {{ db_name }} · всего книг: {{ total }}
+  </p>
+
+  {% if total == 0 %}
+    <p class="subtitle">Библиотека пуста. Импортируйте CSV через CLI (пункт 6).</p>
+  {% else %}
+    <div class="form-row">
+      <a class="btn" href="/books">Все книги</a>
+      <a class="btn secondary" href="/search">Поиск</a>
+      <a class="btn secondary" href="/stats">Статистика</a>
+    </div>
+
+    <h2>Топ жанров</h2>
+    <table>
+      <tr><th>Жанр</th><th>Количество</th><th>Доля</th></tr>
+      {% for genre, cnt in genres %}
+        <tr>
+          <td>{{ genre if genre else "(без жанра)" }}</td>
+          <td class="num">{{ cnt }}</td>
+          <td class="num">{{ "%.1f"|format(cnt / total * 100) }}%</td>
+        </tr>
+      {% endfor %}
+    </table>
+
+    <h2>Топ авторов</h2>
+    <table>
+      <tr><th>Автор</th><th>Количество</th><th>Доля</th></tr>
+      {% for author, cnt in authors %}
+        <tr>
+          <td>{{ author }}</td>
+          <td class="num">{{ cnt }}</td>
+          <td class="num">{{ "%.1f"|format(cnt / total * 100) }}%</td>
+        </tr>
+      {% endfor %}
+    </table>
+  {% endif %}
+{% endblock %}

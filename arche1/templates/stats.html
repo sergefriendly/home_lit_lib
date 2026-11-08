@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Статистика — Домашняя библиотека{% endblock %}
+
+{% block content %}
+  <div class="btn-panel">
+    <a class="btn secondary" href="/report/download">Отчёт (HTML)</a>
+    <a class="btn secondary" href="/report.txt">Отчёт (TXT)</a>
+    <a class="btn gold" href="/dump">Выгрузка БД (HTML)</a>
+    <a class="btn gold" href="/dump.txt">Выгрузка БД (TXT)</a>
+  </div>
+
+  <p class="subtitle stat-line">Всего книг: {{ total }}</p>
+
+  <div class="form-row stat-toggle">
+    {% if kind == 'genre' %}
+      <span class="btn">По жанрам</span>
+      <a class="btn secondary" href="/stats?kind=author">По авторам</a>
+    {% else %}
+      <a class="btn secondary" href="/stats?kind=genre">По жанрам</a>
+      <span class="btn">По авторам</span>
+    {% endif %}
+  </div>
+
+  <div class="clearfix"></div>
+
+  {% if rows %}
+    <table>
+      <tr>
+        <th>{{ "Жанр" if kind == 'genre' else "Автор" }}</th>
+        <th>Количество</th>
+        <th>Доля</th>
+      </tr>
+      {% for label, cnt, pct in rows %}
+        <tr>
+          <td>{{ label }}</td>
+          <td class="num">{{ cnt }}</td>
+          <td class="num">{{ "%.1f"|format(pct) }}%</td>
+        </tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <p class="subtitle">Данных нет.</p>
+  {% endif %}
+{% endblock %}

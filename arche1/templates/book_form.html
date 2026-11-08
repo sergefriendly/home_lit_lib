@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}{% if mode == 'add' %}Добавить книгу{% else %}Редактировать книгу{% endif %} — Домашняя библиотека{% endblock %}
+
+{% block content %}
+  <h2>{% if mode == 'add' %}Новая книга{% else %}Редактирование: {{ book.title }}{% endif %}</h2>
+
+  {% if error %}
+    <p class="subtitle" style="color:#7a2a2a;">Ошибка: {{ error }}</p>
+  {% endif %}
+
+    <form method="post"
+        action="{% if mode == 'add' %}/books?back={{ back|urlencode }}{% else %}/books/{{ book.id }}/edit?back={{ back|urlencode }}{% endif %}">
+    <table>
+      <tr>
+        <th>Фамилия *</th>
+        <td><input type="text" name="last_name" required
+                   value="{{ form.last_name if form else (book.last_name if book else '') }}"></td>
+      </tr>
+      <tr>
+        <th>Имя</th>
+        <td><input type="text" name="first_name"
+                   value="{{ form.first_name if form else (book.first_name or '' if book else '') }}"></td>
+      </tr>
+      <tr>
+        <th>Отчество</th>
+        <td><input type="text" name="middle_name"
+                   value="{{ form.middle_name if form else (book.middle_name or '' if book else '') }}"></td>
+      </tr>
+      <tr>
+        <th>Название *</th>
+        <td><input type="text" name="title" required
+                   value="{{ form.title if form else (book.title if book else '') }}"></td>
+      </tr>
+      <tr>
+        <th>Год</th>
+        <td><input type="text" name="year"
+                   value="{{ form.year if form else (book.year if book and book.year is not none else '') }}"></td>
+      </tr>
+      <tr>
+        <th>Жанр</th>
+        <td><input type="text" name="genre"
+                   value="{{ form.genre if form else (book.genre or '' if book else '') }}"></td>
+      </tr>
+      <tr>
+        <th>Город</th>
+        <td><input type="text" name="city"
+                   value="{{ form.city if form else (book.city or '' if book else '') }}"></td>
+      </tr>
+      <tr>
+        <th>Издание</th>
+        <td><input type="text" name="publisher"
+                   value="{{ form.publisher if form else (book.publisher or '' if book else '') }}"></td>
+      </tr>
+    </table>
+
+    <div class="form-row">
+      <button class="btn" type="submit">Сохранить</button>
+      <a class="btn secondary"
+         href="{% if mode == 'add' %}{{ back }}{% else %}/books/{{ book.id }}?back={{ back|urlencode }}{% endif %}">Отмена</a>
+    </div>
+  </form>
+{% endblock %}

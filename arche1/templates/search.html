@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Поиск — Домашняя библиотека{% endblock %}
+
+{% block content %}
+  {% set qe = q|urlencode %}
+  {% set back_url = "/search?field=" ~ field ~ "&q=" ~ qe ~ "&size=" ~ page_size ~ "&page=" ~ page %}
+  {% set back_enc = back_url|urlencode %}
+  <h2>Поиск</h2>
+
+  <form method="get" action="/search">
+    <div class="form-row">
+      <select name="field">
+        <option value="any"    {% if field == 'any' %}selected{% endif %}>по всем полям</option>
+        <option value="author" {% if field == 'author' %}selected{% endif %}>по автору</option>
+        <option value="title"  {% if field == 'title' %}selected{% endif %}>по названию</option>
+        <option value="genre"  {% if field == 'genre' %}selected{% endif %}>по жанру</option>
+        <option value="year"   {% if field == 'year' %}selected{% endif %}>по году (1833 или 1800-1900)</option>
+        <option value="id"     {% if field == 'id' %}selected{% endif %}>по id</option>
+      </select>
+      <input type="text" name="q" value="{{ q }}" placeholder="подстрока / число">
+      <button class="btn" type="submit">Найти</button>
+    </div>
+  </form>
+
+  {% if error %}
+    <p class="subtitle" style="color:#7a2a2a;">Ошибка: {{ error }}</p>
+  {% elif q %}
+    <p class="subtitle">Найдено: {{ total }}</p>
+
+    {% if results %}
+      <table>
+        <tr><th>id</th><th>Автор</th><th>Название</th><th>Год</th><th>Жанр</th></tr>
+        {% for b in results %}
+          <tr>
+            <td class="num">{{ b.id }}</td>
+            <td><a href="/books/{{ b.id }}?back={{ back_enc }}">{{ b.author }}</a></td>
+            <td>{{ b.title }}</td>
+            <td class="num">{{ b.year if b.year is not none else "—" }}</td>
+            <td>{{ b.genre if b.genre else "—" }}</td>
+          </tr>
+        {% endfor %}
+      </table>
+
+      {% if total_pages > 1 %}
+        <div class="pagination">
+          {% if page > 1 %}
+            <a href="/search?field={{ field }}&q={{ qe }}&size={{ page_size }}&page={{ page - 1 }}">← назад</a>
+          {% else %}
+            <span class="disabled">← назад</span>
+          {% endif %}
+
+          <span class="current">{{ page }} / {{ total_pages }}</span>
+
+          {% if page < total_pages %}
+            <a href="/search?field={{ field }}&q={{ qe }}&size={{ page_size }}&page={{ page + 1 }}">вперёд →</a>
+          {% else %}
+            <span class="disabled">вперёд →</span>
+          {% endif %}
+        </div>
+
+        <div class="pagination">
+          <span>Размер:</span>
+          {% for s in page_sizes %}
+            {% if s == page_size %}
+              <span class="current">{{ s }}</span>
+            {% else %}
+              <a href="/search?field={{ field }}&q={{ qe }}&size={{ s }}&page=1">{{ s }}</a>
+            {% endif %}
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% else %}
+      <p class="subtitle">Ничего не найдено.</p>
+    {% endif %}
+  {% endif %}
+{% endblock %}

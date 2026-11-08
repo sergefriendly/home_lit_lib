@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>{% block title %}Домашняя библиотека{% endblock %}</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="icon" href="/static/favicon.ico">
+</head>
+<body>
+  <main class="card">
+    <h1>Домашняя библиотека</h1>
+
+    <nav class="nav">
+      <a href="/"          {% if active == 'home' %}class="active"{% endif %}>Главная</a>
+      <a href="/books"     {% if active == 'books' %}class="active"{% endif %}>Книги</a>
+      <a href="/search"    {% if active == 'search' %}class="active"{% endif %}>Поиск</a>
+      <a href="/stats"     {% if active == 'stats' %}class="active"{% endif %}>Статистика</a>
+    </nav>
+
+    {% block content %}{% endblock %}
+
+    <footer>Домашняя библиотека · arch1 · веб-интерфейс</footer>
+  </main>
+</body>
+</html>
